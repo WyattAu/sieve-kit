@@ -1,0 +1,24 @@
+[package]
+name = "sieve-kit"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+description = "Rule-based mail filtering engine: conditions, actions, and bounded regex evaluation"
+repository = "https://github.com/WyattAu/sieve-kit"
+readme = "README.md"
+keywords = ["email", "filter", "rules", "sieve"]
+categories = ["email"]
+exclude = ["/target"]
+
+[dependencies]
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+
+[dev-dependencies]
+proptest = "1"
+
+[lints.clippy]
+unwrap_used = "warn"
+expect_used = "warn"

@@ -1,0 +1,8 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc c3c32e72b92758433b7a3ff13efaf8712e2a652b788aa0ae6e6afab6d9c2961d # shrinks to cond = Condition { field: From, operator: Contains, value: "", negate: true }
+cc 908daaa1c933af3c06b413db8bfc82cdc139d5a98df042bad508140d5c2f4fed # shrinks to conds = [Condition { field: From, operator: Contains, value: "b", negate: false }], logic = And

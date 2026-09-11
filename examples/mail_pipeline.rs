@@ -211,6 +211,8 @@ struct Mailbox {
     read: HashSet<String>,
     flags: BTreeMap<String, Vec<Flag>>,
     forwarded: Vec<(String, String)>,
+    replies: Vec<(String, String)>,
+    notifications: Vec<(String, String)>,
 }
 
 impl Mailbox {
@@ -244,6 +246,16 @@ impl Mailbox {
                         .extend(flags.iter().cloned());
                     effects.push(format!("flags {flags:?}"));
                 }
+                PlannedAction::RemoveFlags { flags } => {
+                    if let Some(current) = self.flags.get_mut(id) {
+                        current.retain(|f| !flags.contains(f));
+                    }
+                    effects.push(format!("unflags {flags:?}"));
+                }
+                PlannedAction::SetFlags { flags } => {
+                    self.flags.insert(id.to_string(), flags.clone());
+                    effects.push(format!("flags set to {flags:?}"));
+                }
                 PlannedAction::MarkRead => {
                     self.read.insert(id.to_string());
                     effects.push("marked read".into());
@@ -256,6 +268,17 @@ impl Mailbox {
                 PlannedAction::Forward { to } => {
                     self.forwarded.push((id.to_string(), to.clone()));
                     effects.push(format!("forwarded to {to}"));
+                }
+                PlannedAction::Vacation(reply) => {
+                    self.replies.push((reply.to.clone(), reply.subject.clone()));
+                    effects.push(format!(
+                        "vacation reply queued to {} (once per {} days)",
+                        reply.to, reply.days
+                    ));
+                }
+                PlannedAction::Notify { method, message } => {
+                    self.notifications.push((method.clone(), message.clone()));
+                    effects.push(format!("notify via {method}: {message}"));
                 }
             }
         }
@@ -274,6 +297,12 @@ impl Mailbox {
         }
         for (id, to) in &self.forwarded {
             println!("  forwarded {id} -> {to}");
+        }
+        for (to, subject) in &self.replies {
+            println!("  vacation reply to {to}: {subject:?}");
+        }
+        for (method, message) in &self.notifications {
+            println!("  notification {method}: {message:?}");
         }
     }
 }

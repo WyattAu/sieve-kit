@@ -18,6 +18,8 @@ fn envelope(subject: String) -> MailEnvelope {
         body: "this is a test body".to_string(),
         has_attachment: false,
         headers: vec![("X-Priority".to_string(), "high".to_string())],
+        envelope_from: Some("bounce@sender.example.net".to_string()),
+        envelope_to: Some("inbox@receiver.example.org".to_string()),
     }
 }
 
@@ -210,6 +212,43 @@ proptest! {
         sort_rules_by_priority(&mut rules);
         let got: Vec<i32> = rules.iter().map(|r| r.priority).collect();
         prop_assert_eq!(got, expected);
+    }
+
+    /// `:localpart` + `@` + `:domain` always reassembles the `:all` address.
+    #[test]
+    fn envelope_parts_reassemble_to_all(
+        localpart in "[a-z0-9.]{0,10}",
+        domain in "[a-z0-9.]{0,10}",
+    ) {
+        use sieve_kit::eval::extract_address_part;
+        use sieve_kit::types::AddressPart;
+
+        let address = format!("{localpart}@{domain}");
+        prop_assert_eq!(
+            format!(
+                "{}@{}",
+                extract_address_part(&address, AddressPart::Localpart),
+                extract_address_part(&address, AddressPart::Domain)
+            ),
+            extract_address_part(&address, AddressPart::All)
+        );
+        // The plain address uses the whole value everywhere.
+        prop_assert_eq!(extract_address_part(&address, AddressPart::Localpart), localpart);
+        prop_assert_eq!(extract_address_part(&address, AddressPart::Domain), domain);
+    }
+
+    /// `i;ascii-numeric` equality equals integer equality on digit strings.
+    #[test]
+    fn ascii_numeric_matches_integer_equality(
+        a in "[0-9]{0,8}",
+        b in "[0-9]{0,8}",
+    ) {
+        use sieve_kit::eval::ascii_numeric_eq;
+
+        let expected = a.parse::<u128>().ok().zip(b.parse::<u128>().ok())
+            .is_some_and(|(x, y)| x == y)
+            || (a.is_empty() && b.is_empty());
+        prop_assert_eq!(ascii_numeric_eq(&a, &b), expected);
     }
 }
 

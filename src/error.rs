@@ -21,4 +21,11 @@ pub enum FilterError {
     /// The rule's `name` field is empty.
     #[error("rule name must not be empty")]
     EmptyRuleName,
+    /// A [`Vacation`](crate::types::Vacation) action carries invalid
+    /// arguments (empty message body or a zero-day respond period).
+    #[error("invalid vacation arguments: {reason}")]
+    InvalidVacation {
+        /// What is wrong with the vacation configuration.
+        reason: String,
+    },
 }

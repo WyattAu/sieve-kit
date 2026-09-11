@@ -1,13 +1,13 @@
 [package]
 name = "sieve-kit"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
-description = "Rule-based mail filtering engine: conditions, actions, and bounded regex evaluation"
+description = "Structured mail filter rules engine with RFC 5228 Sieve semantics: conditions, actions, vacation/notify evaluation, IMAP flags, bounded regex"
 repository = "https://github.com/WyattAu/sieve-kit"
 readme = "README.md"
-keywords = ["email", "filter", "rules", "sieve"]
+keywords = ["email", "mail", "filter", "sieve", "rules"]
 categories = ["email"]
 exclude = ["/target"]
 

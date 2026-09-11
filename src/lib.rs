@@ -5,11 +5,17 @@
 //! for a mail engine to execute. This crate is synchronous and I/O-free: all
 //! rule evaluation is deterministic and testable without storage.
 //!
+//! Beyond the RFC 5228 core the typed model also covers the widely used
+//! extensions: SMTP `envelope` tests (RFC 5228 §5.1), IMAP flag mutations
+//! (RFC 5232), and evaluated-only `vacation` (RFC 5230) and `notify`
+//! (RFC 5436) actions — see the README feature table.
+//!
 //! # Security
 //!
 //! Regex evaluation is bounded (100 ms post-check). Invalid patterns are
 //! treated as non-matching (never panic). Actions are returned as values;
-//! executing them is the caller's responsibility.
+//! executing them is the caller's responsibility. Vacation replies are
+//! *evaluated* (routed, deduped) but never sent.
 //!
 //! # Example
 //!
@@ -48,10 +54,15 @@ pub mod error;
 pub mod eval;
 pub mod types;
 
-pub use actions::{FilterMatch, PlannedAction, collect_matches};
+pub use actions::{
+    FilterMatch, PlannedAction, VacationReply, VacationTracker, apply_flag_plan, collect_matches,
+};
 pub use error::FilterError;
-pub use eval::RegexCache;
+pub use eval::{
+    EvalContext, EvalOutcome, EvalWarning, RegexCache, ascii_numeric_eq, evaluate_plan,
+    extract_address_part,
+};
 pub use types::{
-    Action, Condition, ConditionField, FieldValues, FilterRule, Filterable, Flag, LogicOp,
-    MailEnvelope, Operator,
+    Action, AddressPart, Condition, ConditionField, EnvelopePart, FieldValues, FilterRule,
+    Filterable, Flag, KNOWN_NOTIFY_SCHEMES, LogicOp, MailEnvelope, Notify, Operator, Vacation,
 };

@@ -123,6 +123,35 @@ Not implemented (future work):
 If you need full Sieve *script* compatibility today, see
 [COMPARISON.md](COMPARISON.md) for the alternatives and where sieve-kit fits.
 
+## Benchmarks
+
+`benches/eval_bench.rs` (criterion) measures per-rule evaluation cost per
+condition operator, a 50-rule `evaluate_plan` first-match scan, and per-rule
+serde JSON parsing, on a realistic ~2 KiB message. `benches/iai_eval.rs`
+([iai-callgrind](https://github.com/iai-callgrind/iai-callgrind)) is the
+deterministic instruction-count regression gate for the per-condition and
+per-rule eval hot paths (CI-only; requires valgrind).
+
+Indicative numbers from a development machine (x86-64, idle):
+
+| Bench | Result |
+|---|---|
+| `eval/contains_match` | ~0.1 µs/rule |
+| `eval/contains_no_match` (2 KiB body scan) | ~0.6 µs/rule |
+| `eval/glob_match` | ~0.3 µs/rule |
+| `eval/regex_warm_cache` (2 KiB body) | ~33 µs/rule |
+| `eval/numeric_equals` | ~0.08 µs/rule |
+| `eval/envelope_domain` | ~0.14 µs/rule |
+| `eval_plan/50_rules_last_match` | ~10 µs/plan |
+| `parse/rule_from_json` | ~1.3 µs/rule |
+
+Every claim in this README is mapped to its proof artifact in
+[CLAIMS.md](CLAIMS.md).
+
+```text
+cargo bench --bench eval_bench
+```
+
 ## License
 
 MIT OR Apache-2.0

@@ -1,6 +1,6 @@
 [package]
 name = "sieve-kit"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
@@ -17,7 +17,20 @@ serde = { version = "1", features = ["derive"] }
 thiserror = "2"
 
 [dev-dependencies]
+criterion = { version = "0.5" }
+iai-callgrind = "0.16"
 proptest = "1"
+serde_json = "1"
+
+[[bench]]
+name = "eval_bench"
+harness = false
+
+# Deterministic CI perf gate (instruction counts under valgrind). Not run
+# locally unless valgrind is installed; see benches/iai_eval.rs.
+[[bench]]
+name = "iai_eval"
+harness = false
 
 [lints.clippy]
 unwrap_used = "warn"

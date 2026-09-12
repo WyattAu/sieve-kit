@@ -3,6 +3,22 @@
 All notable changes to this project are documented here. Format: [Keep a
 Changelog](https://keepachangelog.com/) — versions follow [semver](https://semver.org).
 
+## [0.2.1] - 2026-09-12
+
+### Added
+
+- First benchmark suite: `benches/eval_bench.rs` (criterion) — per-operator
+  `evaluate_rule` cost, 50-rule `evaluate_plan` first-match scan, per-rule
+  serde JSON parse — and `benches/iai_eval.rs` (iai-callgrind,
+  instruction-count CI gate for the per-condition/per-rule eval hot paths;
+  requires valgrind, compiles everywhere).
+- `CLAIMS.md`: every README/docs claim mapped to its proof artifact
+  (4 backed, 0 newly proven, 0 removed) plus the new measured baseline.
+- README "Benchmarks" section quoting the measured baseline (~0.1 µs per
+  contains rule, ~10 µs per 50-rule plan, ~1.3 µs per JSON-parsed rule).
+
+No API changes.
+
 ## [0.2.0] - 2026-09-11
 
 ### Added

@@ -1,4 +1,5 @@
 # sieve-kit
+[![Estate integration](https://github.com/WyattAu/estate-integration/actions/workflows/ci.yml/badge.svg)](https://github.com/WyattAu/estate-integration/actions/workflows/ci.yml)
 
 Rule-based mail filtering engine for Rust: conditions → actions
 (move / copy / flag / mark-read / delete / forward), plus evaluated

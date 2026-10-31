@@ -2,7 +2,7 @@
 - Rules are `serde`-serializable data; load them from JSON, TOML, or a DB
 pipeline; receive → evaluate → dispatch; over an in-memory mailbox with
 | `discard` | 5228 | `Action::Delete` (to trash; host decides) |
-| has-attachment (sieve-kit-specific) |; | `ConditionField::HasAttachment` |
+| has-attachment (sieve-kit-specific) | - | `ConditionField::HasAttachment` |
 `VacationTracker`), and returns inert outcome values; the host owns
 - `evaluate_rule` / `evaluate_condition`; boolean matching
 - `collect_matches`; first-match actions
